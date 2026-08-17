@@ -1,4 +1,5 @@
 ﻿@page "/"
+
 @using System.ComponentModel.DataAnnotations
 
 <div class="container py-4">
@@ -44,6 +45,14 @@
 
 @code {
 	private readonly Person model = new();
+	private string AssignedRenderModeName => AssignedRenderMode switch
+	{
+		InteractiveServerRenderMode => "Server",
+		InteractiveWebAssemblyRenderMode => "WebAssembly",
+		InteractiveAutoRenderMode => "Auto",
+		null => "Static",
+		_ => AssignedRenderMode.GetType().Name
+	};
 
 	private sealed class Person
 	{
