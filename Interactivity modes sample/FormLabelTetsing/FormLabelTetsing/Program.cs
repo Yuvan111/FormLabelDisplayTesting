@@ -1,4 +1,3 @@
-using FormLabelTetsing.Client.Pages;
 using FormLabelTetsing.Components;
 using Microsoft.AspNetCore.Localization;
 
