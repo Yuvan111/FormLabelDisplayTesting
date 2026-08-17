@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="LocalizationTest" xml:space="preserve"><value>Test de localisation</value></data>
+  <data name="CurrentCulture" xml:space="preserve"><value>Culture actuelle</value></data>
+  <data name="DirectResourceOutput" xml:space="preserve"><value>Sortie directe de la ressource</value></data>
+  <data name="DisplayNameOutput" xml:space="preserve"><value>Sortie de DisplayName</value></data>
+  <data name="DisplayPrecedence" xml:space="preserve"><value>Priorité d'affichage</value></data>
+  <data name="FullName" xml:space="preserve"><value>Nom complet</value></data>
+  <data name="PhoneNumber" xml:space="preserve"><value>Numéro de téléphone</value></data>
+  <data name="Validate" xml:space="preserve"><value>Valider</value></data>
+  <data name="RequiredMessage" xml:space="preserve"><value>Le champ {0} est obligatoire.</value></data>
+  <data name="PhoneFormatMessage" xml:space="preserve"><value>Le champ {0} doit respecter le format 123-456-7890.</value></data>
+</root>

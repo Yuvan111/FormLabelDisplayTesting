@@ -1,0 +1,191 @@
+@page "/scenario-testing"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>Label and DisplayName scenario</PageTitle>
+
+<div class="container py-4">
+	<h1>Label and DisplayName scenario</h1>
+
+	<section class="mb-4">
+		<h2>Display name resolution</h2>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Metadata</th>
+					<th>DisplayName</th>
+					<th>Label</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Display</td>
+					<td><DisplayName For="@(() => product.ContactName)" /></td>
+					<td><Label For="@(() => product.ContactName)" /></td>
+				</tr>
+				<tr>
+					<td>DisplayName</td>
+					<td><DisplayName For="@(() => product.UnitPrice)" /></td>
+					<td><Label For="@(() => product.UnitPrice)" /></td>
+				</tr>
+				<tr>
+					<td>None</td>
+					<td><DisplayName For="@(() => product.Sku)" /></td>
+					<td><Label For="@(() => product.Sku)" /></td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+
+	<div class="row g-4">
+		<section class="col-12 col-lg-6">
+			<h2>Standalone labels</h2>
+			<EditForm Model="product" OnValidSubmit="SaveProduct" FormName="product-form">
+				<DataAnnotationsValidator />
+
+				<div class="mb-3">
+					<Label For="@(() => product.ContactName)" class="form-label" />
+					<InputText @bind-Value="product.ContactName" class="form-control" />
+					<ValidationMessage For="@(() => product.ContactName)" />
+				</div>
+
+				<div class="mb-3">
+					<Label For="@(() => product.UnitPrice)" class="form-label" />
+					<InputNumber @bind-Value="product.UnitPrice" id="product-unit-price" class="form-control" />
+					<div class="form-text">Explicit ID: label for and input id are both product-unit-price.</div>
+					<ValidationMessage For="@(() => product.UnitPrice)" />
+				</div>
+
+				<div class="mb-3">
+					<Label For="@(() => product.Sku)" class="form-label" />
+					<InputText @bind-Value="product.Sku" class="form-control" />
+				</div>
+
+				<button type="submit" class="btn btn-primary">Save product</button>
+			</EditForm>
+		</section>
+
+		<section class="col-12 col-lg-6">
+			<h2>Wrapping and nested labels</h2>
+			<EditForm Model="order" OnValidSubmit="SaveOrder" FormName="order-form">
+				<DataAnnotationsValidator />
+
+				<div class="mb-3">
+					<Label For="@(() => order.OrderNumber)" class="d-grid gap-2 fw-semibold">
+						<InputText @bind-Value="order.OrderNumber" class="form-control fw-normal" />
+					</Label>
+					<ValidationMessage For="@(() => order.OrderNumber)" />
+				</div>
+
+				<div class="mb-3">
+					<Label For="@(() => order.RecipientName)" class="form-label" />
+					<InputText @bind-Value="order.RecipientName" class="form-control" />
+					<ValidationMessage For="@(() => order.RecipientName)" />
+				</div>
+
+				<div class="mb-3">
+					<Label For="@(() => order.DeliveryAddress.Street)" class="form-label" />
+					<InputText @bind-Value="order.DeliveryAddress.Street" id="delivery-street" class="form-control" />
+					<ValidationMessage For="@(() => order.DeliveryAddress.Street)" />
+				</div>
+
+				<div class="mb-3">
+					<Label For="@(() => order.Phone)" class="form-label" />
+					<InputText @bind-Value="order.Phone" class="form-control" />
+					<div class="form-text">Root Phone: inspect this generated id and label for.</div>
+				</div>
+
+				<div class="mb-3">
+					<Label For="@(() => order.DeliveryAddress.Phone)" class="form-label" />
+					<InputText @bind-Value="order.DeliveryAddress.Phone" class="form-control" />
+					<div class="form-text">Nested Phone: its generated id must differ from the root Phone id.</div>
+				</div>
+
+				<button type="submit" class="btn btn-primary">Save order</button>
+			</EditForm>
+		</section>
+	</div>
+
+	<section class="mt-5">
+		<h2>Products</h2>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th><DisplayName For="@(() => product.ContactName)" /></th>
+					<th><DisplayName For="@(() => product.UnitPrice)" /></th>
+					<th><DisplayName For="@(() => product.Sku)" /></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in products)
+				{
+					<tr>
+						<td>@item.ContactName</td>
+						<td>@item.UnitPrice.ToString("C")</td>
+						<td>@item.Sku</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</section>
+</div>
+
+@code {
+	private readonly Product product = new();
+	private readonly Order order = new();
+	private readonly List<Product> products =
+	[
+		new() { ContactName = "Ada Lovelace", UnitPrice = 49.95m, Sku = "BOOK-001" },
+		new() { ContactName = "Grace Hopper", UnitPrice = 79.50m, Sku = "BOOK-002" }
+	];
+
+	private void SaveProduct()
+	{
+	}
+
+	private void SaveOrder()
+	{
+	}
+
+	private sealed class Product
+	{
+		[Required]
+		[Display(Name = "Contact name")]
+		public string ContactName { get; set; } = "Ada Lovelace";
+
+		[Range(0.01, 10000)]
+		[System.ComponentModel.DisplayName("Unit price")]
+		public decimal UnitPrice { get; set; } = 49.95m;
+
+		public string Sku { get; set; } = "BOOK-001";
+	}
+
+	private sealed class Order
+	{
+		[Required]
+		[System.ComponentModel.DisplayName("Order number")]
+		public string OrderNumber { get; set; } = "ORDER-1001";
+
+		[Required]
+		[Display(Name = "Recipient name")]
+		public string RecipientName { get; set; } = "Ada Lovelace";
+
+		[Display(Name = "Root phone")]
+		public string Phone { get; set; } = "555-0100";
+
+		public DeliveryAddress DeliveryAddress { get; set; } = new();
+	}
+
+	private sealed class DeliveryAddress
+	{
+		[Required]
+		[System.ComponentModel.DisplayName("Street address")]
+		public string Street { get; set; } = "12 St James's Square";
+
+		[Display(Name = "Phone number")]
+		public string Phone { get; set; } = "123-456-7890";
+
+		public string PostalCode { get; set; } = "SW1Y 4LB";
+	}
+}

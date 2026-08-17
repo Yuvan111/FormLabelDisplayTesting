@@ -1,0 +1,65 @@
+﻿@page "/"
+@using System.ComponentModel.DataAnnotations
+
+<div class="container py-4">
+	<div class="row">
+		<div class="col-12 col-md-8 col-lg-6">
+			<h1 class="mb-4">Label sample</h1>
+
+			<div class="list-group mb-4">
+				<p class="list-group-item mb-0">Display attribute: <strong><DisplayName For="@(() => model.Name)" /></strong></p>
+				<p class="list-group-item mb-0">DisplayName attribute: <strong><DisplayName For="@(() => model.Email)" /></strong></p>
+				<p class="list-group-item mb-0">Both attributes: <strong><DisplayName For="@(() => model.Phone)" /></strong></p>
+				<p class="list-group-item mb-0">No attribute: <strong><DisplayName For="@(() => model.UserName)" /></strong></p>
+			</div>
+
+			<div class="vstack gap-3">
+				<Label For="@(() => model.Name)" class="d-grid gap-2 fw-semibold">
+					<InputText @bind-Value="model.Name" class="form-control fw-normal" />
+				</Label>
+
+				<Label For="@(() => model.Email)" class="d-grid gap-2 fw-semibold">
+					<InputText @bind-Value="model.Email" id="email-input" class="form-control fw-normal" />
+				</Label>
+
+				<Label For="@(() => model.Phone)" class="d-grid gap-2 fw-semibold">
+					<InputText @bind-Value="model.Phone" class="form-control fw-normal" />
+				</Label>
+
+				<Label For="@(() => model.UserName)" class="d-grid gap-2 fw-semibold">
+					<InputText @bind-Value="model.UserName" class="form-control fw-normal" />
+				</Label>
+
+				<div>
+					<p class="mb-2 fw-semibold">Explicit input ID</p>
+					<Label For="@(() => model.CustomIdValue)" class="d-grid gap-2 fw-semibold">
+						<InputText id="custom-id-input" @bind-Value="model.CustomIdValue" class="form-control fw-normal" />
+					</Label>
+					<p class="form-text">Inspect the rendered label and click its text to verify that this input receives focus.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	private readonly Person model = new();
+
+	private sealed class Person
+	{
+		[Display(Name = "Full name")]
+		public string Name { get; set; } = "Ada Lovelace";
+
+		[System.ComponentModel.DisplayName("Email address")]
+		public string Email { get; set; } = "ada@example.com";
+
+		[Display(Name = "Phone number from Display")]
+		[System.ComponentModel.DisplayName("Phone from DisplayName")]
+		public string Phone { get; set; } = "123-456-7890";
+
+		public string UserName { get; set; } = "ada";
+
+		[Display(Name = "Custom ID value")]
+		public string CustomIdValue { get; set; } = "Uses a custom input ID";
+	}
+}

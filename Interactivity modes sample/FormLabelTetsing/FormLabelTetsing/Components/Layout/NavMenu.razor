@@ -1,0 +1,38 @@
+﻿<script type="module" src="@Assets["Components/Layout/NavMenu.razor.js"]"></script>
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">FormLabelTetsing</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div id="nav-scrollable" class="nav-scrollable">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Basic Testing
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/scenario-testing">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Scenario Testing
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/locale-testing">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Locale Testing
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/form-testing">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Form Testing
+            </NavLink>
+        </div>
+    </nav>
+</div>
+

@@ -1,0 +1,78 @@
+@page "/locale-testing"
+@using System.ComponentModel.DataAnnotations
+@using System.Globalization
+@using FormLabelTestingWasm.Resources
+@using Microsoft.AspNetCore.Components.Forms
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<div class="container py-4">
+	<div class="row">
+		<div class="col-12 col-md-8 col-lg-6">
+			<h1 class="mb-3">@AppDisplayNames.LocalizationTest</h1>
+			<p>@AppDisplayNames.CurrentCulture: <strong>@CultureInfo.CurrentUICulture.Name</strong></p>
+
+			<div class="d-flex gap-2 mb-4">
+				<button type="button" class="btn btn-outline-secondary" disabled="@(CultureInfo.CurrentUICulture.Name == "en-US")" @onclick='() => SetCultureAsync("en-US")' lang="en">English</button>
+				<button type="button" class="btn btn-outline-secondary" disabled="@(CultureInfo.CurrentUICulture.Name == "fr-FR")" @onclick='() => SetCultureAsync("fr-FR")' lang="fr">Français</button>
+			</div>
+
+			<p>@AppDisplayNames.DirectResourceOutput: <strong>@AppDisplayNames.FullName</strong></p>
+			<p>@AppDisplayNames.DisplayNameOutput: <strong><DisplayName For="@(() => model.Name)" /></strong></p>
+
+			<EditForm Model="model" FormName="localized-person">
+				<DataAnnotationsValidator />
+				<ValidationSummary class="alert alert-danger" />
+
+				<div class="mb-3">
+					<Label For="@(() => model.Name)" class="d-grid gap-2 fw-semibold">
+						<InputText @bind-Value="model.Name" class="form-control fw-normal" />
+					</Label>
+					<ValidationMessage For="@(() => model.Name)" class="text-danger" />
+				</div>
+
+				<p class="mt-4">@AppDisplayNames.DisplayPrecedence: <strong><DisplayName For="@(() => model.Phone)" /></strong></p>
+
+				<div class="mb-3">
+					<Label For="@(() => model.Phone)" class="d-grid gap-2 fw-semibold">
+						<InputText @bind-Value="model.Phone" class="form-control fw-normal" />
+					</Label>
+					<ValidationMessage For="@(() => model.Phone)" class="text-danger" />
+				</div>
+
+				<button type="submit" class="btn btn-primary">@AppDisplayNames.Validate</button>
+			</EditForm>
+		</div>
+	</div>
+</div>
+
+@code {
+	private readonly Person model = new();
+
+	private async Task SetCultureAsync(string culture)
+	{
+		try
+		{
+			await JS.InvokeVoidAsync("localStorage.setItem", "appCulture", culture);
+		}
+		catch (JSException)
+		{
+			return;
+		}
+
+		Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+	}
+
+	private sealed class Person
+	{
+		[Display(Name = nameof(AppDisplayNames.FullName), ResourceType = typeof(AppDisplayNames))]
+		[Required(ErrorMessageResourceName = nameof(AppDisplayNames.RequiredMessage), ErrorMessageResourceType = typeof(AppDisplayNames))]
+		public string Name { get; set; } = "Ada Lovelace";
+
+		[Display(Name = nameof(AppDisplayNames.PhoneNumber), ResourceType = typeof(AppDisplayNames))]
+		[System.ComponentModel.DisplayName("Phone from DisplayName")]
+		[Required(ErrorMessageResourceName = nameof(AppDisplayNames.RequiredMessage), ErrorMessageResourceType = typeof(AppDisplayNames))]
+		[RegularExpression(@"^\d{3}-\d{3}-\d{4}$", ErrorMessageResourceName = nameof(AppDisplayNames.PhoneFormatMessage), ErrorMessageResourceType = typeof(AppDisplayNames))]
+		public string Phone { get; set; } = "123-456-7890";
+	}
+}

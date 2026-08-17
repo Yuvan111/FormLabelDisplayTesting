@@ -1,0 +1,154 @@
+﻿@page "/form-testing"
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Form label component tests</PageTitle>
+
+<h1>Form label component tests</h1>
+
+<h2>Display name resolution</h2>
+
+<ul class="mb-4">
+	<li><strong>Display:</strong> <DisplayName For="@(() => model.FullName)" /></li>
+	<li><strong>DisplayName:</strong> <DisplayName For="@(() => model.Email)" /></li>
+	<li><strong>Fallback:</strong> <DisplayName For="@(() => model.UserName)" /></li>
+	<li><strong>Display precedence:</strong> <DisplayName For="@(() => model.Department)" /></li>
+	<li><strong>Nested property:</strong> <DisplayName For="@(() => model.Address.Street)" /></li>
+</ul>
+
+<h2>Application form</h2>
+
+<EditForm Model="model" FormName="profile">
+	<DataAnnotationsValidator />
+
+	<div class="mb-3">
+		<Label For="@(() => model.FullName)" class="form-label" data-test="full-name-label" />
+		<InputText @bind-Value="model.FullName" class="form-control" />
+	</div>
+
+	<div class="mb-3">
+		<Label For="@(() => model.Email)" class="form-label" />
+		<InputText @bind-Value="model.Email" id="email-input" class="form-control" type="email" />
+	</div>
+
+	<div class="mb-3">
+		<Label For="@(() => model.Biography)" class="form-label" />
+		<InputTextArea @bind-Value="model.Biography" class="form-control" rows="3" />
+	</div>
+
+	<div class="mb-3">
+		<Label For="@(() => model.Age)" class="form-label" />
+		<InputNumber @bind-Value="model.Age" class="form-control" min="18" max="120" />
+	</div>
+
+	<div class="mb-3">
+		<Label For="@(() => model.StartDate)" class="form-label" />
+		<InputDate @bind-Value="model.StartDate" class="form-control" />
+	</div>
+
+	<div class="mb-3">
+		<Label For="@(() => model.Department)" class="form-label" />
+		<InputSelect @bind-Value="model.Department" class="form-select">
+			<option value="@Department.Engineering">Engineering</option>
+			<option value="@Department.Research">Research</option>
+			<option value="@Department.Operations">Operations</option>
+		</InputSelect>
+	</div>
+
+	<fieldset class="mb-3">
+		<legend class="col-form-label"><DisplayName For="@(() => model.WorkMode)" /></legend>
+		<InputRadioGroup @bind-Value="model.WorkMode">
+			<div class="form-check">
+				<InputRadio Value="@WorkMode.Office" class="form-check-input" id="mode-office" />
+				<label class="form-check-label" for="mode-office">Office</label>
+			</div>
+			<div class="form-check">
+				<InputRadio Value="@WorkMode.Remote" class="form-check-input" id="mode-remote" />
+				<label class="form-check-label" for="mode-remote">Remote</label>
+			</div>
+		</InputRadioGroup>
+	</fieldset>
+
+	<div class="form-check mb-3">
+		<Label For="@(() => model.AcceptTerms)" class="form-check-label">
+			<InputCheckbox @bind-Value="model.AcceptTerms" class="form-check-input" />
+		</Label>
+	</div>
+
+	<div class="mb-3">
+		<Label For="@(() => model.Address.Street)" class="form-label">
+			<InputText @bind-Value="model.Address.Street" class="form-control" />
+		</Label>
+	</div>
+
+	<div class="mb-3">
+		<Label For="@(() => model.ResumeFileName)" class="form-label" />
+		<InputFile id="resume-file" class="form-control" />
+	</div>
+
+	<InputHidden @bind-Value="model.RecordId" />
+	<ValidationSummary />
+	<button type="submit" class="btn btn-primary">Save profile</button>
+</EditForm>
+
+@code {
+	private readonly Person model = new();
+
+	private sealed class Person
+	{
+		[Required]
+		[Display(Name = "Full name")]
+		public string FullName { get; set; } = "Ada Lovelace";
+
+		[Required, EmailAddress]
+		[System.ComponentModel.DisplayName("Email address")]
+		public string Email { get; set; } = "ada@example.com";
+
+		public string UserName { get; set; } = "ada";
+
+		[Display(Name = "Team")]
+		[System.ComponentModel.DisplayName("Department from DisplayName")]
+		public Department Department { get; set; } = Department.Engineering;
+
+		[Display(Name = "About you", Description = "A short professional biography", Prompt = "Tell us about yourself")]
+		public string Biography { get; set; } = "Computing pioneer.";
+
+		[Range(18, 120)]
+		[Display(Name = "Age")]
+		public int Age { get; set; } = 36;
+
+		[Display(Name = "Start date")]
+		public DateOnly StartDate { get; set; } = new(2026, 8, 14);
+
+		[Display(Name = "Work mode")]
+		public WorkMode WorkMode { get; set; } = WorkMode.Office;
+
+		[Display(Name = "I accept the terms")]
+		public bool AcceptTerms { get; set; } = true;
+
+		[Display(Name = "Resume")]
+		public string ResumeFileName { get; set; } = string.Empty;
+
+		public string RecordId { get; set; } = "sample-001";
+
+		public Address Address { get; set; } = new();
+	}
+
+	private sealed class Address
+	{
+		[Display(Name = "Street address")]
+		public string Street { get; set; } = "12 St James's Square";
+	}
+
+	private enum Department
+	{
+		Engineering,
+		Research,
+		Operations
+	}
+
+	private enum WorkMode
+	{
+		Office,
+		Remote
+	}
+}

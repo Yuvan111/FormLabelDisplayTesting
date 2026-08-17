@@ -1,0 +1,55 @@
+@page "/locale-testing"
+@using System.ComponentModel.DataAnnotations
+@using System.Globalization
+@using FormLabelTetsing.Client.Resources
+@using Microsoft.AspNetCore.Components.Forms
+@inject NavigationManager Navigation
+
+<div class="container py-4">
+	<div class="row">
+		<div class="col-12 col-md-8 col-lg-6">
+			<h1 class="mb-3">Localization test</h1>
+			<p>Current culture: <strong>@CultureInfo.CurrentUICulture.Name</strong></p>
+
+			<div class="d-flex gap-2 mb-4">
+				<a href="@CultureUrl("en-US")" data-enhance-nav="false" class="btn btn-outline-secondary">English</a>
+				<a href="@CultureUrl("fr-FR")" data-enhance-nav="false" class="btn btn-outline-secondary">Français</a>
+			</div>
+
+			<p>Direct resource output: <strong>@AppDisplayNames.FullName</strong></p>
+			<p>DisplayName output: <strong><DisplayName For="@(() => model.Name)" /></strong></p>
+
+			<Label For="@(() => model.Name)" class="d-grid gap-2 fw-semibold">
+				<InputText @bind-Value="model.Name" class="form-control fw-normal" />
+			</Label>
+
+			<p class="mt-4">Display precedence: <strong><DisplayName For="@(() => model.Phone)" /></strong></p>
+
+			<Label For="@(() => model.Phone)" class="d-grid gap-2 fw-semibold">
+				<InputText @bind-Value="model.Phone" class="form-control fw-normal" />
+			</Label>
+		</div>
+	</div>
+</div>
+
+@code {
+	private readonly Person model = new();
+
+	private string CultureUrl(string culture)
+	{
+		var uri = new Uri(Navigation.Uri);
+		var returnUrl = uri.PathAndQuery;
+
+		return $"/culture/{Uri.EscapeDataString(culture)}?returnUrl={Uri.EscapeDataString(returnUrl)}";
+	}
+
+	private sealed class Person
+	{
+		[Display(Name = nameof(AppDisplayNames.FullName), ResourceType = typeof(AppDisplayNames))]
+		public string Name { get; set; } = "Ada Lovelace";
+
+		[Display(Name = nameof(AppDisplayNames.PhoneNumber), ResourceType = typeof(AppDisplayNames))]
+		[System.ComponentModel.DisplayName("Phone from DisplayName")]
+		public string Phone { get; set; } = "123-456-7890";
+	}
+}
