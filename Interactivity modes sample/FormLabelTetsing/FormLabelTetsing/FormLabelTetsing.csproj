@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FormLabelTetsing.Client\FormLabelTetsing.Client.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="11.0.0-rc.1.26409.102" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="11.0.0-preview.7.26381.103" />
   </ItemGroup>
 
 </Project>
